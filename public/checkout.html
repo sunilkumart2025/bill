@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 2rem;
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #aaa;
+      max-width: 400px;
+      margin: auto;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #0f9d58;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Checkout</h2>
+    <p>Total Amount: ₹<span id="amount">0</span></p>
+    <button onclick="payNow()">Pay with Razorpay</button>
+  </div>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    // Get total from cart
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    let total = 0;
+    cart.forEach(item => {
+      total += item.price * item.qty;
+    });
+
+    // Show total on screen
+    document.getElementById('amount').innerText = total;
+
+    function payNow() {
+      if (total === 0) {
+        alert("Cart is empty!");
+        return;
+      }
+
+      const options = {
+        key: "rzp_test_bRjucrSL6g8tIo", // ✅ Replace with your Razorpay API Key
+        amount: total * 100, // in paise
+        currency: "INR",
+        name: "Supermarket Billing",
+        description: "Thanks for shopping with us",
+        image: "https://yourlogo.com/logo.png", // optional
+        handler: function (response) {
+          alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+          localStorage.removeItem('cart'); // Clear cart
+          window.location.href = "success.html"; // Redirect to success page
+        },
+        prefill: {
+          name: "Customer Name",
+          email: "email@example.com",
+          contact: "9999999999"
+        },
+        theme: {
+          color: "#0f9d58"
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+  </script>
+</body>
+</html>

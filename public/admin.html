@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🛠️ Admin Panel</h1>
+
+  <form action="/api/products/add" method="POST">
+    <input name="name" placeholder="Product Name" required>
+    <input name="price" placeholder="Price" required>
+    <input name="stock" placeholder="Stock" required>
+    <button type="submit">Add Product</button>
+  </form>
+
+  <hr>
+  <h3>Existing Products</h3>
+  <div id="list"></div>
+
+  <script>
+    fetch('/api/products').then(res => res.json()).then(products => {
+      const list = document.getElementById('list');
+      products.forEach(p => {
+        list.innerHTML += `
+          <form action="/api/products/edit/${p.id}" method="POST">
+            <input name="name" value="${p.name}">
+            <input name="price" value="${p.price}">
+            <input name="stock" value="${p.stock}">
+            <button>Update</button>
+            <a href="/api/products/delete/${p.id}">Delete</a>
+          </form><br>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>

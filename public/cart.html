@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🧺 Your Cart</h1>
+  <div id="cart-items"></div>
+  <h3>Total: ₹<span id="total">0</span></h3>
+  <a href="checkout.html" id="checkout-link">Proceed to Checkout</a>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const container = document.getElementById('cart-items');
+    let total = 0;
+
+    cart.forEach(item => {
+      const div = document.createElement('div');
+      const itemTotal = item.price * item.qty;
+      total += itemTotal;
+      div.innerHTML = `<strong>${item.name}</strong> x ${item.qty} = ₹${itemTotal}`;
+      container.appendChild(div);
+    });
+
+    document.getElementById('total').innerText = total;
+
+    // 🔁 Save the total to localStorage as paise (Razorpay uses paise)
+    localStorage.setItem('totalAmount', total * 100);
+  </script>
+</body>
+</html>
